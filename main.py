@@ -442,35 +442,6 @@ class CliqueFinderApp:
                 tk.END, f"Время выполнения: {session['execution_time']:.4f} сек\n"
             )
 
-    def load_statistics(self):
-        stats = db.get_statistics()
-
-        self.stats_text.delete(1.0, tk.END)
-        self.stats_text.insert(tk.END, "ОБЩАЯ СТАТИСТИКА ПОИСКОВ\n\n")
-        self.stats_text.insert(tk.END, f"Всего поисков: {stats['total_searches']}\n")
-        self.stats_text.insert(
-            tk.END, f"Успешных поисков: {stats['successful_searches']}\n"
-        )
-        self.stats_text.insert(
-            tk.END, f"Процент успеха: {stats['success_rate']*100:.1f}%\n\n"
-        )
-
-        self.stats_text.insert(tk.END, "СРЕДНИЕ ПОКАЗАТЕЛИ\n\n")
-        self.stats_text.insert(
-            tk.END, f"Среднее количество шагов: {stats['avg_steps']:.1f}\n"
-        )
-        self.stats_text.insert(
-            tk.END, f"Среднее время выполнения: {stats['avg_time']:.4f} сек\n\n"
-        )
-
-        self.stats_text.insert(tk.END, "МАКСИМАЛЬНЫЕ ПОКАЗАТЕЛИ\n\n")
-        self.stats_text.insert(
-            tk.END, f"Максимальное количество шагов: {stats['max_steps']}\n"
-        )
-        self.stats_text.insert(
-            tk.END, f"Максимальное время выполнения: {stats['max_time']:.4f} сек\n"
-        )
-
     def clear_history(self):
         if messagebox.askyesno(
             "Подтверждение", "Вы уверены, что хотите очистить всю историю?"
