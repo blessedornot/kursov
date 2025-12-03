@@ -87,7 +87,8 @@ class CliqueFinderApp:
 
         ttk.Label(graph_frame, text="Визуализация графа").pack()
         self.figure = plt.Figure(figsize=(6, 5), dpi=100)
-
+        self.ax = self.figure.add_subplot(111)
+        self.canvas = FigureCanvasTkAgg(self.figure, graph_frame)
         self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
         ttk.Label(result_frame, text="Процесс поиска").pack()
@@ -177,7 +178,8 @@ class CliqueFinderApp:
         self.load_statistics()
 
     def create_default_graph(self):
-
+        self.num_vertices = 6
+        self.vertices_entry.delete(0, tk.END)
         self.vertices_entry.insert(0, str(self.num_vertices))
 
         self.graph = [
@@ -345,7 +347,9 @@ class CliqueFinderApp:
 
         self.result_text.insert(tk.END, f"РЕЗУЛЬТАТ ПОИСКА:\n")
         self.result_text.insert(tk.END, f"ID в базе данных: {session_id}\n")
-
+        self.result_text.insert(tk.END, f"Размер клики: k = {k}\n")
+        self.result_text.insert(tk.END, f"Выполнено шагов: {total_steps}\n")
+        self.result_text.insert(tk.END, f"Время выполнения: {execution_time:.4f} сек\n")
         self.result_text.insert(
             tk.END, f"Результат: {'КЛИКА НАЙДЕНА' if found else 'КЛИКА НЕ НАЙДЕНА'}\n"
         )
@@ -361,7 +365,9 @@ class CliqueFinderApp:
         )
 
         self.load_history()
+        self.load_statistics()
 
+    def save_current_to_db(self):
         if not hasattr(self, "current_clique") or not self.solution_clique:
             messagebox.showwarning("Предупреждение", "Сначала выполните поиск клики")
             return
@@ -378,6 +384,12 @@ class CliqueFinderApp:
 
         messagebox.showinfo("Успех", f"Результат сохранен в БД с ID: {session_id}")
         self.load_history()
+
+    def load_history(self):
+        for item in self.history_tree.get_children():
+            self.history_tree.delete(item)
+
+        sessions = db.get_all_sessions()
 
         for session in sessions:
             clique_str = (
